@@ -1,24 +1,28 @@
-import java.util.ArrayList;
+import java.util.HashMap;
 
 public class CategoryList {
-    private ArrayList<Category> catList;
+    private HashMap<Integer, Category> catList;
+
     public CategoryList() {
-        this.catList = new ArrayList<Category>();
+        this.catList = new HashMap<Integer, Category>();
     }
 
     public void createCategory(Category cat) {
-        
+        this.catList.put(cat.categoryId, cat);
     }
 
-    public void getCategories() {
-
+    public String getCategories() {
+        String c = "";
+        for(Category cat: this.catList.values())
+            c += cat + "\n";
+        return c;
     }
 
-    public void getCategory() {
-
+    public Category getCategory(int catid) {
+        return this.catList.get(catid);
     }
 
-    public void deleteCategory() {
-
+    public Category deleteCategory(int catid) {
+        return this.catList.remove(catid);
     }
 }
