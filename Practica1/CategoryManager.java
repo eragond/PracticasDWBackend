@@ -23,7 +23,10 @@ public class CategoryManager {
 
     public void testGetCategories() {
         System.out.println("Estas son tus categorias: "); 
-        System.out.println(clst.getCategories()); 
+        String ret = clst.getCategories();
+        if(ret == "")
+            System.out.println("No existen categorias registradas"); 
+        System.out.println(ret); 
     }
 
     public void testGetCategory() {
@@ -53,13 +56,13 @@ public class CategoryManager {
         CategoryManager catman = new CategoryManager();
         Scanner scan = new Scanner(System.in);
 
+        // Categorias de ejemplo
         catman.clst.createCategory(new Category(0, "Juan"));
         catman.clst.createCategory(new Category(1, "Pablo"));
         catman.clst.createCategory(new Category(2, "Mario"));
         catman.clst.createCategory(new Category(3, "Ernesto"));
         catman.clst.createCategory(new Category(4, "Milaneso"));
         catman.clst.createCategory(new Category(5, "Daniel"));
-
 
         int chos;
         do{
@@ -85,8 +88,7 @@ public class CategoryManager {
                     catman.testDeleteCategory();
                     break;
             }
-        }while(chos != 4);
-
-
+        } while(chos != 4);
+        System.out.println("Bye :)"); 
     }
 } 

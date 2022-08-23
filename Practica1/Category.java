@@ -1,6 +1,4 @@
-
 public class Category {
-
     public int categoryId;
     public String category;
 
