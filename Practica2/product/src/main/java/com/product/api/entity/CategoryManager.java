@@ -1,4 +1,4 @@
-package com.product;
+package com.product.api.entity;
 
 import java.util.Scanner;
 

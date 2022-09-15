@@ -1,4 +1,4 @@
-package com.product;
+package com.product.api.entity;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -11,7 +11,7 @@ public class CategoryList {
     }
 
     public void createCategory(Category cat) {
-        this.catList.put(cat.categoryId, cat);
+        this.catList.put(cat.getCategory_id(), cat);
     }
 
     public String getCategories() {
