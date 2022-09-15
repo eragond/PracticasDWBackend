@@ -27,7 +27,7 @@ public class CategoryList {
     
     public Category getCategory(String cat_nom) {
     	for(Category c: this.catList.values()) 
-    		if(c.getCategory() == cat_nom)
+    		if(c.getCategory().equals(cat_nom)) 
     			return c;
     	return null;
     }

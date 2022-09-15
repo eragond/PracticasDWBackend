@@ -53,7 +53,8 @@ public class CtrlCategory {
 			return new ResponseEntity<>(msg, HttpStatus.BAD_REQUEST);
 		}
 		Category cat = clst.getCategory(category.getCategory()); 
-		if(cat == null) {
+		System.out.println(category.getCategory());
+		if(cat == null) { //TEMPORAL EN LO QUE SE USA LA DB
 			clst.createCategory(new Category(clst.size()+1, category.getCategory()));
 			return new ResponseEntity<>("category has been created", HttpStatus.CREATED);
 		}
