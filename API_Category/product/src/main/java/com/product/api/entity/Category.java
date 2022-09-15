@@ -34,7 +34,7 @@ public class Category {
     public Category(int id, String catName) {
         this.category_id = id;
         this.category = catName;
-        this.status = 1;
+        this.status = 0;
     }
 
     public Integer getCategory_id() {

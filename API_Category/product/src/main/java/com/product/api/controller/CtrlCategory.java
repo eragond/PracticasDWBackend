@@ -52,9 +52,9 @@ public class CtrlCategory {
 			msg = bindingResult.getAllErrors().get(0).getDefaultMessage();
 			return new ResponseEntity<>(msg, HttpStatus.BAD_REQUEST);
 		}
-		Category cat = clst.getCategory(category.getCategory_id()); 
+		Category cat = clst.getCategory(category.getCategory()); 
 		if(cat == null) {
-			clst.createCategory(category);
+			clst.createCategory(new Category(clst.size()+1, category.getCategory()));
 			return new ResponseEntity<>("category has been created", HttpStatus.CREATED);
 		}
 		if(cat.getStatus() == 0) {
@@ -79,7 +79,7 @@ public class CtrlCategory {
 		if(cat.getStatus() == 0)
 			return new ResponseEntity<>("category is not active", HttpStatus.BAD_REQUEST);
 		
-		clst.createCategory(category);
+		cat.setCategory(category.getCategory());
 		return new ResponseEntity<>("category updated", HttpStatus.OK);
 	}
 	
