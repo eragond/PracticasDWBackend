@@ -1,9 +1,10 @@
 package com.product.api.controller;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import javax.validation.Valid;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -17,32 +18,23 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.product.api.entity.Category;
-import com.product.api.entity.CategoryList;
+import com.product.api.service.SvcCategory;
 
 @RestController		
 @RequestMapping("/category")
 public class CtrlCategory {
-	String[] nombres = {"Abarrotes", "Electronica"};
-	CategoryList clst;
-	
-	public CtrlCategory() {
-		clst = new CategoryList();
-		for(int i = 0; i < nombres.length; i++) 
-			clst.createCategory(new Category(i, nombres[i]));		
-	}
+
+	@Autowired
+	SvcCategory svc;
 	
 	@GetMapping
-	public ResponseEntity<ArrayList<Category>> listCategories() {		
-		return new ResponseEntity<>(clst.getCatsArrayList(), HttpStatus.OK);
+	public ResponseEntity<List<Category>> listCategories() {		
+		return new ResponseEntity<>(svc.listCategories(), HttpStatus.OK);
 	}
 	
 	@GetMapping("/{category_id}")
 	public ResponseEntity<Category> readCategory(@PathVariable Integer category_id){
-		Category cat = clst.getCategory(category_id);							   
-		if (cat == null)
-			return new ResponseEntity<>(cat, HttpStatus.BAD_REQUEST);
-		return new ResponseEntity<>(cat, HttpStatus.OK);
-		
+		return new ResponseEntity<>(svc.readCategory(category_id), HttpStatus.OK);
 	} 
 	
 	@PostMapping
@@ -52,16 +44,7 @@ public class CtrlCategory {
 			msg = bindingResult.getAllErrors().get(0).getDefaultMessage();
 			return new ResponseEntity<>(msg, HttpStatus.BAD_REQUEST);
 		}
-		Category cat = clst.getCategory(category.getCategory()); 
-		if(cat == null) { //TEMPORAL EN LO QUE SE USA LA DB
-			clst.createCategory(new Category(clst.size(), category.getCategory()));
-			return new ResponseEntity<>("category has been created", HttpStatus.CREATED);
-		}
-		if(cat.getStatus() == 0) {
-			cat.setStatus(1);
-			return new ResponseEntity<>("category has been activated", HttpStatus.OK);
-		}	
-		return new ResponseEntity<>("category already exist", HttpStatus.BAD_REQUEST);
+		return new ResponseEntity<>(svc.createCategory(category), HttpStatus.BAD_REQUEST);
 		
 		
 	}
@@ -73,21 +56,11 @@ public class CtrlCategory {
 			msg = bindingResult.getAllErrors().get(0).getDefaultMessage();
 			return new ResponseEntity<>(msg, HttpStatus.BAD_REQUEST);
 		}
-		Category cat = clst.getCategory(category_id); 
-		if(cat == null)
-			return new ResponseEntity<>("category does not exist", HttpStatus.NOT_FOUND);
-		if(cat.getStatus() == 0)
-			return new ResponseEntity<>("category is not active", HttpStatus.BAD_REQUEST);
-		
-		cat.setCategory(category.getCategory());
-		return new ResponseEntity<>("category updated", HttpStatus.OK);
+		return new ResponseEntity<>(svc.updateCategory(category_id, category), HttpStatus.OK);
 	}
 	
 	@DeleteMapping("/{category_id}")
 	public ResponseEntity<String> deleteCategory(@PathVariable Integer category_id) {
-		Category cat = clst.deleteCategory(category_id);
-		if(cat == null)
-			return new ResponseEntity<>("category does not exist", HttpStatus.NOT_FOUND);
-		return new ResponseEntity<>("category removed", HttpStatus.OK);
+		return new ResponseEntity<>(svc.deleteCategory(category_id), HttpStatus.OK);
 	}
 }

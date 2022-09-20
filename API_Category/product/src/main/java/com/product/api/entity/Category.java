@@ -30,6 +30,8 @@ public class Category {
 	@Max(value = 1, message = "status must be 0 or 1")
 	@JsonIgnore
     private Integer status;
+	
+    public Category() {} // Chilla si no tiene constructor vacio
 
     public Category(int id, String catName) {
         this.category_id = id;
