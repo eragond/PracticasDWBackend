@@ -3,10 +3,13 @@ package com.product.api.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import com.product.api.dto.ApiResponse;
 import com.product.api.entity.Category;
 import com.product.api.repository.RepoCategory;
+import com.product.exception.ApiException;
 
 @Service
 public class SvcCategoryImp implements SvcCategory {
@@ -21,44 +24,47 @@ public class SvcCategoryImp implements SvcCategory {
 
 	@Override
 	public Category readCategory(Integer category_id) {
-		return repo.findByCategoryId(category_id);
+		Category catSave = repo.findByCategoryId(category_id);
+		if(catSave == null)
+			throw new ApiException(HttpStatus.NOT_FOUND, "category does not exist");
+		return catSave;
 	}
 
 	@Override
-	public String createCategory(Category category) {
+	public ApiResponse createCategory(Category category) {
 		Category catSave = (Category) repo.findByCategory(category.getCategory());
 		if(catSave == null) {
 			repo.createCategory(category.getCategory());
-			return "Category created";
+			return new ApiResponse("category created");
 		}
 		if(catSave.getStatus() == 0) {
 			repo.activateCategory(catSave.getCategory_id());
-			return "Category has been activated";
+			return new ApiResponse("category has been activated");
 		} 
-		return "Category already exist";
+		throw new ApiException(HttpStatus.BAD_REQUEST, "category already exist");
 	}
 
 	@Override
-	public String updateCategory(Integer category_id, Category category) {
+	public ApiResponse updateCategory(Integer category_id, Category category) {
 		Category catSave = (Category) repo.findByCategoryId(category_id);
 		if(catSave == null)
-			return "Category does not exist";	
+			throw new ApiException(HttpStatus.NOT_FOUND, "category does not exist");
 		if(catSave.getStatus() == 0) 
-			return "Category is not active";
+			throw new ApiException(HttpStatus.BAD_REQUEST, "category is not active");
 		catSave = (Category) repo.findByCategory(category.getCategory());
 		if(catSave != null)
-			return "Category already exist";
+			throw new ApiException(HttpStatus.BAD_REQUEST, "category already exist");
 		repo.updateCategory(category_id, category.getCategory());
-		return "Category updated";
+		return new ApiResponse("category updated");
 	}
 
 	@Override
-	public String deleteCategory(Integer category_id) {
+	public ApiResponse deleteCategory(Integer category_id) {
 		Category catSave = (Category) repo.findByCategoryId(category_id);
 		if(catSave == null)
-			return "Category does not exist";	
+			throw new ApiException(HttpStatus.NOT_FOUND, "category does not exist");
 		repo.deleteByCategoryId(category_id);
-		return "Category removed";
+		return new ApiResponse("category removed");
 	}
 
 }
